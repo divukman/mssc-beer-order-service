@@ -3,10 +3,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <!-- Parent is our BOM -->
     <parent>
-        <groupId>guru.springframework</groupId>
+        <groupId>tech.dimitar</groupId>
         <artifactId>mssc-brewery-bom</artifactId>
-        <version>1.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
 
@@ -36,4 +37,14 @@
             <version>${jaxb.version}</version>
         </dependency>
     </dependencies>
+
+    <repositories>
+        <repository>
+            <id>github</id>
+            <name>GitHub Packages</name>
+            <url>https://maven.pkg.github.com/divukman/mssc-brewery-BOM/</url>
+            <releases><enabled>true</enabled></releases>
+            <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+    </repositories>
 </project>
