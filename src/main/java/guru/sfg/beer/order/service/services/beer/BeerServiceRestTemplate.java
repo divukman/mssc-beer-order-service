@@ -11,6 +11,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Objects;
+import java.util.Optional;
+import java.util.UUID;
 
 @Slf4j
 @ConfigurationProperties(prefix = "sfg.brewery", ignoreUnknownFields = false)
@@ -18,6 +20,7 @@ import java.util.Objects;
 public class BeerServiceRestTemplate implements BeerService {
 
     private static final String BEER_BY_UPC_PATH = "/api/v1/beerUpc/{beerUpc}";
+    private static final String BEER_BY_ID_PATH = "/api/v1/beer/";
 
     private final RestTemplate restTemplate;
 
@@ -33,7 +36,7 @@ public class BeerServiceRestTemplate implements BeerService {
     }
 
     @Override
-    public BeerDto getBeer(String upc) {
+    public Optional<BeerDto> getBeerByUpc(String upc) {
         log.debug("Calling Beer Service get beer by upc: " + upc);
 
         ResponseEntity<BeerDto> responseEntity = restTemplate.exchange(beerServiceHost + BEER_BY_UPC_PATH,
@@ -44,6 +47,11 @@ public class BeerServiceRestTemplate implements BeerService {
 
         BeerDto beerDto = Objects.requireNonNull(responseEntity.getBody());
 
-        return beerDto;
+        return Optional.of(beerDto);
+    }
+
+    @Override
+    public Optional<BeerDto> getBeerById(UUID id) {
+        return Optional.of( restTemplate.getForObject(beerServiceHost + BEER_BY_ID_PATH + id.toString(), BeerDto.class) );
     }
 }

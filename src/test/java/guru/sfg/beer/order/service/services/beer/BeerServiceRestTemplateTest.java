@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @Disabled
 @SpringBootTest
 class BeerServiceRestTemplateTest {
@@ -17,7 +15,7 @@ class BeerServiceRestTemplateTest {
 
     @Test
     public void testGetBeerByUPC() {
-        final BeerDto beerDto = beerService.getBeer("0631234200036");
+        final BeerDto beerDto = beerService.getBeerByUpc("0631234200036").get();
 
         System.out.println(beerDto);
     }
