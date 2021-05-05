@@ -21,7 +21,17 @@
 
 
     <dependencies>
-        <!-- Nothing to see here, pulling all from parent bom! -->
+        <!-- Spring state machine dep -->
+        <dependency>
+            <groupId>org.springframework.statemachine</groupId>
+            <artifactId>spring-statemachine-core</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.statemachine</groupId>
+            <artifactId>spring-statemachine-autoconfigure</artifactId>
+            <version>3.0.0</version>
+        </dependency>
     </dependencies>
 
     <repositories>
