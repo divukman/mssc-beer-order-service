@@ -8,6 +8,9 @@ import org.springframework.jms.support.converter.MessageType;
 
 @Configuration
 public class JmsConfig {
+
+    public static final String QUEUE_VALIDATE_ORDER = "validate-order";
+
     /**
      * Bean -> message converter
      * Using Jackson libraries to convert message to JSON
