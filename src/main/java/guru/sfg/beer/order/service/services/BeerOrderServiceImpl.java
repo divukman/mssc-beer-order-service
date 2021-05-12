@@ -45,14 +45,16 @@ public class BeerOrderServiceImpl implements BeerOrderService {
     private final CustomerRepository customerRepository;
     private final BeerOrderMapper beerOrderMapper;
     private final ApplicationEventPublisher publisher;
+    private final BeerOrderManager beerOrderManager;
 
     public BeerOrderServiceImpl(BeerOrderRepository beerOrderRepository,
                                 CustomerRepository customerRepository,
-                                BeerOrderMapper beerOrderMapper, ApplicationEventPublisher publisher) {
+                                BeerOrderMapper beerOrderMapper, ApplicationEventPublisher publisher, BeerOrderManager beerOrderManager) {
         this.beerOrderRepository = beerOrderRepository;
         this.customerRepository = customerRepository;
         this.beerOrderMapper = beerOrderMapper;
         this.publisher = publisher;
+        this.beerOrderManager = beerOrderManager;
     }
 
     @Override
@@ -88,14 +90,15 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
             beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
 
-            BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+            //BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
 
             log.debug("Saved Beer Order: " + beerOrder.getId());
 
             //todo impl
           //  publisher.publishEvent(new NewBeerOrderEvent(savedBeerOrder));
+            beerOrderManager.newBeerOrder(beerOrder);
 
-            return beerOrderMapper.beerOrderToDto(savedBeerOrder);
+            return beerOrderMapper.beerOrderToDto(beerOrder);
         }
         //todo add exception type
         throw new RuntimeException("Customer Not Found");
