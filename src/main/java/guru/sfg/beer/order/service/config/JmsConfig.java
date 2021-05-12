@@ -11,6 +11,7 @@ public class JmsConfig {
 
     public static final String QUEUE_VALIDATE_ORDER = "validate-order";
     public static final String QUEUE_VALIDATE_ORDER_RESULT = "validate-order-result";
+    public static final String QUEUE_ALLOCATE_ORDER = "allocate-order";
 
 
     /**
