@@ -8,10 +8,8 @@ import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.services.BeerOrderManagerImpl;
 import guru.sfg.beer.order.service.web.mappers.BeerOrderMapper;
 import guru.sfg.brewery.model.events.ValidateOrderRequest;
-import guru.sfg.brewery.model.events.ValidateOrderResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.core.JmsTemplate;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.action.Action;
@@ -37,14 +35,6 @@ public class ValidateOrderRequestAction implements Action<BeerOrderStatusEnum, B
         jmsTemplate.convertAndSend(JmsConfig.QUEUE_VALIDATE_ORDER,new ValidateOrderRequest(beerOrderMapper.beerOrderToDto(beerOrder)));
 
         log.debug("Sent validation request to the queue " + JmsConfig.QUEUE_VALIDATE_ORDER + " for an order with id " + beerOrderId.toString());
-    }
-
-    @JmsListener(destination = JmsConfig.QUEUE_VALIDATE_ORDER_RESULT)
-    public void listen(final ValidateOrderResult validateOrderResult) {
-        log.debug(" *** *** ***");
-        log.debug("Order validation result received...");
-        log.debug("Order id: " + validateOrderResult.getOrderId() + " is valid: " + validateOrderResult.isValid());
-        log.debug(" *** *** ***");
     }
 
 }
