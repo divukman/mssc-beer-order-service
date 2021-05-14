@@ -5,6 +5,7 @@ import guru.sfg.beer.order.service.domain.BeerOrderEventEnum;
 import guru.sfg.beer.order.service.domain.BeerOrderStatusEnum;
 import guru.sfg.beer.order.service.repositories.BeerOrderRepository;
 import guru.sfg.beer.order.service.sm.BeerOrderStateChangeInterceptor;
+import guru.sfg.brewery.model.BeerOrderDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
@@ -52,6 +53,53 @@ public class BeerOrderManagerImpl implements BeerOrderManager {
         }
     }
 
+    @Deprecated
+    @Override
+    public void processAllocationResult(UUID beerOrderId, boolean isPending, boolean errorHappened) {
+        final BeerOrder beerOrder = beerOrderRepository.findById(beerOrderId).get();
+        if (!isPending && !errorHappened) {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
+        } else if (isPending && !errorHappened){
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
+        } else if (errorHappened) {
+            sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_FAILED);
+        }
+    }
+
+    @Override
+    public void beerOrderAllocationPassed(BeerOrderDto beerOrderDto) {
+        final BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_SUCCESS);
+        updateAllocatedQty(beerOrderDto);
+    }
+
+    @Override
+    public void beerOrderAllocationPendingInventory(BeerOrderDto beerOrderDto) {
+        final BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_NO_INVENTORY);
+        updateAllocatedQty(beerOrderDto);
+    }
+
+    @Override
+    public void beerOrderAllocationFailed(BeerOrderDto beerOrderDto) {
+        final BeerOrder beerOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+        sendBeerOrderEvent(beerOrder, BeerOrderEventEnum.ALLOCATION_FAILED);
+    }
+
+
+    private void updateAllocatedQty(BeerOrderDto beerOrderDto) {
+        BeerOrder allocatedOrder = beerOrderRepository.getOne(beerOrderDto.getId());
+
+        allocatedOrder.getBeerOrderLines().forEach(beerOrderLine -> {
+            beerOrderDto.getBeerOrderLines().forEach(beerOrderLineDto -> {
+                    if (beerOrderLine.getId().equals(beerOrderLineDto.getId())) {
+                        beerOrderLine.setQuantityAllocated(beerOrderLineDto.getQuantityAllocated());
+                    }
+            });
+        });
+
+        beerOrderRepository.saveAndFlush(allocatedOrder);
+    }
 
     private void sendBeerOrderEvent(final BeerOrder beerOrder, final BeerOrderEventEnum event) {
         final StateMachine<BeerOrderStatusEnum, BeerOrderEventEnum> sm = build(beerOrder);
