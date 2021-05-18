@@ -32,15 +32,32 @@
             <artifactId>spring-statemachine-autoconfigure</artifactId>
             <version>3.0.0</version>
         </dependency>
+
+
+        <!-- Wiremock dep -->
+        <dependency>
+            <groupId>com.github.jenspiegsa</groupId>
+            <artifactId>wiremock-extension</artifactId>
+            <version>0.4.0</version>
+        </dependency>
     </dependencies>
 
+
     <repositories>
+
+        <!-- My parent BOM -->
         <repository>
             <id>github</id>
             <name>GitHub Packages</name>
             <url>https://maven.pkg.github.com/divukman/mssc-brewery-BOM/</url>
             <releases><enabled>true</enabled></releases>
             <snapshots><enabled>true</enabled></snapshots>
+        </repository>
+
+        <!-- Wiremock -> for stubbing web server rest calls in tests... -->
+        <repository>
+            <id>jitpack.io</id>
+            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 </project>

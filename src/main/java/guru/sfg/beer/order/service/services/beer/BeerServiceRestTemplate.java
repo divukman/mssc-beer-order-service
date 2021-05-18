@@ -19,8 +19,9 @@ import java.util.UUID;
 @Component
 public class BeerServiceRestTemplate implements BeerService {
 
-    private static final String BEER_BY_UPC_PATH = "/api/v1/beerUpc/{beerUpc}";
-    private static final String BEER_BY_ID_PATH = "/api/v1/beer/";
+    public static final String BEER_BY_UPC_ROOT_PATH = "/api/v1/beerUpc/";
+    public static final String BEER_BY_UPC_PATH = BEER_BY_UPC_ROOT_PATH + "{beerUpc}";
+    public static final String BEER_BY_ID_PATH = "/api/v1/beer/";
 
     private final RestTemplate restTemplate;
 
