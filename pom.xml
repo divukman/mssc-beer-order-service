@@ -40,6 +40,14 @@
             <artifactId>wiremock-extension</artifactId>
             <version>0.4.0</version>
         </dependency>
+
+
+        <!-- JMS Artemis, test scope -->
+        <dependency>
+            <groupId>org.apache.activemq</groupId>
+            <artifactId>artemis-jms-server</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
