@@ -23,11 +23,13 @@ import org.springframework.context.annotation.Bean;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import static com.github.jenspiegsa.wiremockextension.ManagedWireMockServer.with;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.okJson;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
+import static org.awaitility.Awaitility.await;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -92,7 +94,15 @@ public class BeerOrderManagerImplIT {
         BeerOrder beerOrder = createBeerOrder();
         BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
 
-        Thread.sleep(4000);
+        final UUID beeerOrderId = savedBeerOrder.getId();
+
+        //Thread.sleep(4000);
+
+        await().atMost(5, TimeUnit.SECONDS).until(() -> {
+            System.out.println("waiting");
+            final BeerOrder beerOrder1 = beerOrderRepository.findById(beeerOrderId).get();
+            return beerOrder1.getOrderStatus() == BeerOrderStatusEnum.ALLOCATION_PENDING;
+        });
 
         savedBeerOrder =beerOrderRepository.findById(savedBeerOrder.getId()).get();
 

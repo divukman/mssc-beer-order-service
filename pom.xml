@@ -48,6 +48,13 @@
             <artifactId>artemis-jms-server</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <!-- Awaitility -->
+        <dependency>
+            <groupId>org.awaitility</groupId>
+            <artifactId>awaitility</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
 
