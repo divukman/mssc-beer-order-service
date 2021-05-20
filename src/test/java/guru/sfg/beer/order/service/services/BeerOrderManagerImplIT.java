@@ -98,10 +98,10 @@ public class BeerOrderManagerImplIT {
 
         //Thread.sleep(4000);
 
-        await().atMost(5, TimeUnit.SECONDS).until(() -> {
+        await().atMost(55, TimeUnit.SECONDS).until(() -> {
             System.out.println("waiting");
             final BeerOrder beerOrder1 = beerOrderRepository.findById(beeerOrderId).get();
-            return beerOrder1.getOrderStatus() == BeerOrderStatusEnum.ALLOCATION_PENDING;
+            return beerOrder1.getOrderStatus() == BeerOrderStatusEnum.ALLOCATED;
         });
 
         savedBeerOrder =beerOrderRepository.findById(savedBeerOrder.getId()).get();
