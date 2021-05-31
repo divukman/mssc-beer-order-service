@@ -90,15 +90,14 @@ public class BeerOrderServiceImpl implements BeerOrderService {
 
             beerOrder.getBeerOrderLines().forEach(line -> line.setBeerOrder(beerOrder));
 
-            BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
-
-            log.debug("Saved Beer Order: " + savedBeerOrder.getId());
+            //BeerOrder savedBeerOrder = beerOrderRepository.saveAndFlush(beerOrder);
+            //log.debug("Saved Beer Order: " + savedBeerOrder.getId());
 
             //todo impl
           //  publisher.publishEvent(new NewBeerOrderEvent(savedBeerOrder));
-            beerOrderManager.newBeerOrder(beerOrder);
+            BeerOrder savedOrder = beerOrderManager.newBeerOrder(beerOrder);
 
-            return beerOrderMapper.beerOrderToDto(beerOrder);
+            return beerOrderMapper.beerOrderToDto(savedOrder);
         }
         //todo add exception type
         throw new RuntimeException("Customer Not Found");

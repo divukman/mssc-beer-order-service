@@ -80,7 +80,7 @@ public class BeerOrderManagerImplIT {
 
 
     @Test
-    void testNewToAllocated() throws JsonProcessingException, InterruptedException {
+    void testNewToAllocated() throws JsonProcessingException {
         BeerDto beerDto = BeerDto.builder()
                 .id(beerId)
                 .upc("1234")
@@ -123,5 +123,32 @@ public class BeerOrderManagerImplIT {
                 .build());
         beerOrder.setBeerOrderLines(beerOrderLines);
         return beerOrder;
+    }
+
+
+    @Test
+    void testNewToPickedUp () throws JsonProcessingException {
+        BeerDto beerDto = BeerDto.builder()
+                .id(beerId)
+                .upc("1234")
+                .build();
+
+        wireMockServer.stubFor(
+                get(BeerServiceRestTemplate.BEER_BY_UPC_ROOT_PATH + "1234")
+                        .willReturn(okJson(objectMapper.writeValueAsString(beerDto)))
+        );
+
+        BeerOrder beerOrder = createBeerOrder();
+        BeerOrder savedBeerOrder = beerOrderManager.newBeerOrder(beerOrder);
+
+        final UUID beeerOrderId = savedBeerOrder.getId();
+
+        //Thread.sleep(4000);
+
+        await().atMost(55, TimeUnit.SECONDS).until(() -> {
+            System.out.println("waiting");
+            final BeerOrder beerOrder1 = beerOrderRepository.findById(beeerOrderId).get();
+            return beerOrder1.getOrderStatus() == BeerOrderStatusEnum.ALLOCATED;
+        });
     }
 }
